@@ -1,56 +1,59 @@
 #Elaborado por Erick Bernardo Guido Tellez
 
-def infix_to_postfix(expression):
-    precedence = {'^': 3, '*': 2, '/': 2, '+': 1, '-': 1}
-    stack = []
-    output = []
+def infija_a_postfija(expresion):
+    precedencia = {'^': 3, '*': 2, '/': 2, '+': 1, '-': 1}
+    pila = []
+    salida = []
     
-    for char in expression:
-        if char.isalnum():  # Si es un operando (número o letra)
-            output.append(char)
-        elif char == '(':
-            stack.append(char)
-        elif char == ')':
-            while stack and stack[-1] != '(':
-                output.append(stack.pop())
-            stack.pop()  # Eliminar '(' de la pila
+    for caracter in expresion:
+        if caracter.isalnum():  # Si es un operando (número o letra)
+            salida.append(caracter)
+        elif caracter == '(':
+            pila.append(caracter)
+        elif caracter == ')':
+            while pila and pila[-1] != '(':
+                salida.append(pila.pop())
+            pila.pop()  # Eliminar '(' de la pila
         else:  # Es un operador
-            while (stack and stack[-1] != '(' and
-                   precedence[char] <= precedence[stack[-1]]):
-                output.append(stack.pop())
-            stack.append(char)
+            while (pila and pila[-1] != '(' and
+                   precedencia[caracter] <= precedencia[pila[-1]]):
+                salida.append(pila.pop())
+            pila.append(caracter)
     
-    while stack:
-        output.append(stack.pop())
+    while pila:
+        salida.append(pila.pop())
     
-    return ''.join(output)
+    return ''.join(salida)
 
-def evaluate_postfix(expression):
-    stack = []
+def evaluar_postfija(expresion):
+    pila = []
     
-    for char in expression:
-        if char.isdigit():  # Si es un operando
-            stack.append(int(char))
+    for simbolo in expresion:
+        if simbolo.isdigit():  # Si es un operando
+            pila.append(int(simbolo))
         else:  # Es un operador
-            operand2 = stack.pop()
-            operand1 = stack.pop()
-            if char == '+':
-                stack.append(operand1 + operand2)
-            elif char == '-':
-                stack.append(operand1 - operand2)
-            elif char == '*':
-                stack.append(operand1 * operand2)
-            elif char == '/':
-                stack.append(operand1 / operand2)
-            elif char == '^':
-                stack.append(operand1 ** operand2)
+            operando2 = pila.pop()  # Sacar el segundo operando
+            operando1 = pila.pop()  # Sacar el primer operando
+            
+            # Realizar la operación según el operador leído
+            if simbolo == '+':
+                valor = operando1 + operando2
+            elif simbolo == '-':
+                valor = operando1 - operando2
+            elif simbolo == '*':
+                valor = operando1 * operando2
+            elif simbolo == '/':
+                valor = operando1 / operando2
+            elif simbolo == '^':
+                valor = operando1 ** operando2
+            
+            pila.append(valor)  # Empujar el resultado a la pila
     
-    return stack.pop()
-
+    return pila.pop()  # El resultado final es el único elemento en la pila
 
 def main():
     # Lista de expresiones infijas
-    infix_expressions = [
+    expresiones_infijas = [
         "6 + 4 * ( 9 + 5 * 2 - 3 )",
         "5 * 4 + ( 9 / 3 + 8 * 2 )",
         "7 + 3 * ( 9 + 5 * 2 ^ 3 - 8 )",
@@ -59,14 +62,14 @@ def main():
         "6 * 2 + 8 - 3 * 2 / 2"
     ]
     
-    for infix_expression in infix_expressions:
+    for expresion_infija in expresiones_infijas:
         # Convertir a postfijo
-        postfix_expression = infix_to_postfix(infix_expression.replace(" ", ""))
-        print(f"Expresión en postfijo: {postfix_expression}")
+        expresion_postfija = infija_a_postfija(expresion_infija.replace(" ", ""))
+        print(f"Expresión en postfijo: {expresion_postfija}")
         
         # Evaluar la expresión en postfijo
-        result = evaluate_postfix(postfix_expression)
-        print(f"Resultado de la evaluación: {result}\n")
+        resultado = evaluar_postfija(expresion_postfija)
+        print(f"Resultado de la evaluación: {resultado}\n")
 
 if __name__ == "__main__":
     main()
